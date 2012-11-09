@@ -1,0 +1,13 @@
+{
+   "content_scripts": [ {
+      "css": [ "intpds.css" ],
+      "include_globs": [ "http://resdex.naukri.com/search/*" ],
+      "js": [ "intpds.js" ],
+      "matches": [ "http://*/*", "https://*/*" ]
+   } ],
+   "description": "Summarizes the candidate information ",
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDS0XFxnC5UxR8aL9osjNhjn59BoNqWhuD3KgBjqwhc59oYY4v32tVFBlV6fBRvMQtvxZlRcMtybPTHYd9myuJaK/IMPAu5aZZjfzgb+Qx2LqJfFhCJwy1RlAbyr+f0gUCraZAs/tOinOs7/Swymf0upwKvdFemdgopY57mQTSd1wIDAQAB",
+   "name": "Intpds-Naukri-Summary",
+   "permissions": [ "tabs", "http://resdex.naukri.com/" ],
+   "version": "1.1.1"
+}
