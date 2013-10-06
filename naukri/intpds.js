@@ -210,6 +210,9 @@ function makeSummary() {
     else {
         alert("No candidates selected..");
     }
+
+    //for debugging..
+    return allhtml;
 }
 
 //insert summary button
@@ -220,11 +223,13 @@ function insertButton() {
     if (ul.snapshotLength>0) {
         var newDiv = document.createElement('div');
         newDiv.setAttribute("id","isum");
-        newDiv.innerHTML = "<button id='aisum' onclick='makeSummary();'>intpds-summary</button>";
+        newDiv.innerHTML = "<button id='aisum' onclick='makeSummary();'>summary</button>";
         ul.snapshotItem(0).parentNode.insertBefore(newDiv, ul.snapshotItem(0).nextSibling);
 
         //$('aisum').addEventListener("click", makeSummary, true);
-        //addGlobalStyle("#aisum {font-size:150%;font-weight:bold;color:red;} ");
+        
+	addGlobalStyle("#aisum {position: fixed; top: 0px; right: 0px; background-color: #0053CC; color: white; font-size: 1.3em; border-color: #0053BC;cursor: pointer;}");
+
     }
     var sumdiv = document.createElement('div');
     sumdiv.setAttribute("id","sumdiv");
