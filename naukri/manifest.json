@@ -9,7 +9,7 @@
    "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDS0XFxnC5UxR8aL9osjNhjn59BoNqWhuD3KgBjqwhc59oYY4v32tVFBlV6fBRvMQtvxZlRcMtybPTHYd9myuJaK/IMPAu5aZZjfzgb+Qx2LqJfFhCJwy1RlAbyr+f0gUCraZAs/tOinOs7/Swymf0upwKvdFemdgopY57mQTSd1wIDAQAB",
    "name": "Intpds-Naukri-Summary",
    "permissions": [ "tabs", "http://resdex.naukri.com/" ],
-   "version": "1.3.0",
+   "version": "1.3.2",
    "update_url": "https://github.com/voidnull/intpds/raw/master/builds/updates.xml" ,
    "manifest_version": 2
 }

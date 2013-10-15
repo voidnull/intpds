@@ -184,7 +184,7 @@ function makeSummary() {
                 div+="</div>";
 
                 allhtml+=div;
-                allhtml+="<hr class=line/>";
+                //allhtml+="<hr class=line/>";
             }
             else {
                 console.log("candidate : " + i + " : has not been selected ..");
