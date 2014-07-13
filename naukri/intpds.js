@@ -152,7 +152,7 @@ function makeSummary() {
 
                 //name
                 value="";
-                nodes = document.evaluate("./div[@class='mt10']/strong", candidate, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+                nodes = document.evaluate("./div[@class='mt10']//strong", candidate, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
                 if (nodes.snapshotLength>=1) value=stripHtml(nodes.snapshotItem(0).innerHTML);
                 div+="<span class='n v'>"+trim(value.toLowerCase()); div+="</span>";
 
