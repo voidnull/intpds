@@ -1,15 +1,14 @@
 {
-   "content_scripts": [ {
-      "css": [ "intpds.css" ],
-      "include_globs": [ "http://resdex.naukri.com/search/*" ],
-      "js": [ "intpds.js" ],
-      "matches": [ "http://*/*", "https://*/*" ]
-   } ],
-   "description": "Summarizes the candidate information ",
-   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDS0XFxnC5UxR8aL9osjNhjn59BoNqWhuD3KgBjqwhc59oYY4v32tVFBlV6fBRvMQtvxZlRcMtybPTHYd9myuJaK/IMPAu5aZZjfzgb+Qx2LqJfFhCJwy1RlAbyr+f0gUCraZAs/tOinOs7/Swymf0upwKvdFemdgopY57mQTSd1wIDAQAB",
-   "name": "Intpds-Naukri-Summary",
-   "permissions": [ "tabs", "http://resdex.naukri.com/" ],
-   "version": "1.3.2",
-   "update_url": "https://github.com/voidnull/intpds/raw/master/builds/updates.xml" ,
-   "manifest_version": 2
+    "icons" : { "128" : "icon.png"},
+    "content_scripts": [ {
+        "css": [ "intpds.css" ],
+        "include_globs": [ "http://resdex.naukri.com/search/*" ],
+        "js": [ "intpds.js" ],
+        "matches": [ "http://*/*", "https://*/*" ]
+    } ],
+    "description": "Summarizes the candidate information ",
+    "name": "Intpds-Naukri-Summary",
+    "permissions": [ "tabs", "http://resdex.naukri.com/" ],
+    "version": "2.0",
+    "manifest_version": 2
 }
