@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name Intpds-Naukri-Summary
 // @namespace http://www.naukri.com
-// @version 0.23
+// @version 3.0
 // @author Premkumar (contactprem@gmail.com)
-// @include http://resdex.naukri.com/search/*
+// @include http://resdex.naukri.com/v2/search/searchResults*
 
 
 function $() {
@@ -26,7 +26,6 @@ function addGlobalStyle(css) {
     style.innerHTML = css;
     head.appendChild(style);
 }
-
 
 function makeSummary() {
     /**
@@ -100,88 +99,104 @@ function makeSummary() {
         }
     }
 
+    function getNode(xpath, parentNode) {
+        return document.evaluate(xpath, parentNode, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    }
+
+    function addNameValue(name, value) {
+        div+="<li>";
+        div+="<span class='n'>" + trim(name) + "</span>: &nbsp;";
+        div+="<span class='v'>" + trim(value) + "</span>";
+        div+="</li>";
+    }
+
     //fill the data
     //get all divs - iterator style
-    var allcands,nodes;
+    var allcands,nodes,div;
     var count=0;
     var allhtml="";
-    allhtml+= "<html><head><title>Canditate Summary</title>";
+    allhtml="";
+    allhtml+= "<html><head><title>Candidate Summary</title>";
     allhtml+='<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/reset/reset-min.css">';
     allhtml+= "<style>" ;
     //"* {font-family: Verdana, Tahoma, Helvetica, Arial;}" +
     allhtml+="* {font-family: Arial, Helvetica, sans-serif;}" +
         "*.cand {display:block;padding:3px;border:1px solid #95B3D7;margin:8px;} \n" +
+        "*.candinfo {margin-bottom:25px;} \n" +
         "*.hdr  {text-align:center;margin-bottom:10px;font-weight:bold;} \n" +
         "*.ftr  {text-align:center;margin-top:10px;} \n" +
-        "span.n {font-style:italic;font-size:0.75em;text-transform:capitalize;margin:1px 0px;padding:0px;} \n" +
+        "span.n {font-style:italic;font-size:0.75em;text-transform:capitalize;margin:1px 0px;padding:0px;float:left;width:50px;} \n" +
         "span.v {font-weight:bold;font-size:0.75em;margin:1px 0px;text-transform:capitalize;padding:0px;} \n" +
         "hr.line {border: 1px solid #000;;}";
     allhtml+="</style></head><body>";
     allhtml+="<div class='cand hdr'>";
     allhtml+="Candidates</div><hr class=line/>";
-    allcands = document.evaluate("//div[@class='tupBGN']", document.documentElement, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    allcands = getNode("//div[@id='tupCont']/div[@class='tuple']", document.documentElement);
     console.log('num candidates:' + allcands.snapshotLength);
     if (allcands){
-        var i,j;
+        var i,j, checked;
         var len=allcands.snapshotLength;
-
+        
         //just click the phone ...
-        for (i=0; i < len; i++) {
+        for (i = 0; i < len; i++) {
+            checked = false;
             candidate=allcands.snapshotItem(i);
-            nodes = document.evaluate("./div[@class='tup_title']/input", candidate, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-            if (nodes.snapshotLength>=1 &&  nodes.snapshotItem(0).checked==true) {
-                //click this vpnbtn
-                nodes = document.evaluate("./ul[@class='tup_lt']/li/span/span[@class='vpnbtn']/a", candidate, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-                if (nodes.snapshotLength>=1) {
-                    nodes.snapshotItem(0).onclick();
-                    console.log("clicked on " + nodes.snapshotItem(0));
-                    //wait(1000);
-                }
+            checkbox=getNode(".//a[contains(@class,'userChk')]/input[@type='checkbox']", candidate);
+            if (checkbox.snapshotLength>=1) checked = (1 == checkbox.snapshotItem(0).value || checkbox.snapshotItem(0).checked)
+            console.log((1 == checkbox.snapshotItem(0).value || checkbox.snapshotItem(0).checked));
+            console.log(checked)
+
+            phone = getNode(".//a[@class='tel']", candidate);
+            if (phone.snapshotLength>=1 &&  checked) {
+                phone.snapshotItem(0).click();
+                console.log("clicked on " + phone.snapshotItem(0));
             }
         }
 
         //DO IT AGAIN - so that we can pick up the new phone numbers.
-        allcands = document.evaluate("//div[@class='tupBGN']", document.documentElement, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        allcands = getNode("//div[@id='tupCont']/div[@class='tuple']", document.documentElement);
 
         for (i=0; i < len; i++) {
             candidate=allcands.snapshotItem(i);
-            nodes = document.evaluate("./div[@class='tup_title']/input", candidate, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-            if (nodes.snapshotLength>=1 &&  nodes.snapshotItem(0).checked==true) {
+            checked=false;
+            checkbox=getNode(".//a[contains(@class,'userChk')]/input[@type='checkbox']", candidate);
+
+            if (checkbox.snapshotLength>=1) {
+                console.log(1 == checkbox.snapshotItem(0).value)
+                checked = (1 == checkbox.snapshotItem(0).value || checkbox.snapshotItem(0).checked);
+            
+                console.log((1 == checkbox.snapshotItem(0).value || checkbox.snapshotItem(0).checked));
+                console.log(checked)
+            }
+
+            if (checked) {
                 count++;
-                div="<div class=cand>";
+                div="<div class='cand candinfo'><ul>";
 
                 //name
                 value="";
-                nodes = document.evaluate("./div[@class='mt10']//strong", candidate, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+                nodes = getNode(".//a[contains(@class,'name') and contains(@class,'fl')]", candidate);
                 if (nodes.snapshotLength>=1) value=stripHtml(nodes.snapshotItem(0).innerHTML);
-                div+="<span class='n v'>"+trim(value.toLowerCase()); div+="</span>";
+                addNameValue('name', value);
 
                 //title
                 value="";
-                nodes = document.evaluate("./div[@class='tup_title']/a", candidate, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+                nodes = getNode(".//div[@class='tupLeft']/label[text()='Current']/following-sibling::div[1]", candidate);
                 if (nodes.snapshotLength>=1) value=stripHtml(nodes.snapshotItem(0).innerHTML);
-                //div+="Title:"+value; div+="<br>";
+                //addNameValue('Title', value);
 
-                //Other data
+                //location
                 value="";
-                nodes = document.evaluate("./ul[@class='tup_lt']/li/i/..", candidate, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-                for(j=0; j<nodes.snapshotLength ; j++) {
-                    value=specificEmphasis(stripHtml(nodes.snapshotItem(j).innerHTML));
-                    div+=value;
-                }
-
-                nodes = document.evaluate("./ul[@class='tup_rt']/li/i/..", candidate, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-                for(j=0; j<nodes.snapshotLength ; j++) {
-                    value=specificEmphasis(stripHtml(nodes.snapshotItem(j).innerHTML));
-                    div+=value;
-                }
+                nodes = getNode(".//div[@class='tupLeft']/label[contains(text(),'Location')]/following-sibling::div[1]", candidate);
+                if (nodes.snapshotLength>=1) value=stripHtml(nodes.snapshotItem(0).innerHTML);
+                addNameValue('Location', value);
 
                 //phone
-                value="";
-                nodes = document.evaluate("./ul[@class='tup_lt']/li/span/i", candidate, null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+                nodes = getNode(".//a[contains(@class,'tel')]/span[@class='txt']", candidate);
                 if (nodes.snapshotLength>=1) value=stripHtml(nodes.snapshotItem(0).innerHTML);
-                div+=specificEmphasis(trim(value));
-                div+="</div>";
+                addNameValue('Phone', value);
+
+                div+="</ul></div>";
 
                 allhtml+=div;
                 //allhtml+="<hr class=line/>";
@@ -219,16 +234,16 @@ function makeSummary() {
 function insertButton() {
     var ul;
 
-    ul=document.evaluate("//div[@id='mainNav']/div[@class='wrapper']/ul",document.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    ul=document.evaluate("//div[@class='clFx exploreLinkCont']",document.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
     if (ul.snapshotLength>0) {
         var newDiv = document.createElement('div');
         newDiv.setAttribute("id","isum");
-        newDiv.innerHTML = "<button id='aisum' onclick='makeSummary();'>summary</button>";
+        newDiv.innerHTML = "<button id='aisum' onclick='makeSummary();'>Summary</button>";
         ul.snapshotItem(0).parentNode.insertBefore(newDiv, ul.snapshotItem(0).nextSibling);
 
         //$('aisum').addEventListener("click", makeSummary, true);
         
-	addGlobalStyle("#aisum {position: fixed; top: 0px; right: 0px; background-color: #0053CC; color: white; font-size: 1.3em; border-color: #0053BC;cursor: pointer;}");
+	addGlobalStyle("#aisum {position: fixed; top: 80px; left: 00px; background-color: #0053CC; color: white; font-size: 1.3em; border-color: #0053BC;cursor: pointer;}");
 
     }
     var sumdiv = document.createElement('div');
